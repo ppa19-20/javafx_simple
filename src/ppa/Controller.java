@@ -1,38 +1,29 @@
 package ppa;
 
+import java.io.IOException;
+
 import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
 public class Controller {
 
-    @FXML
-    protected Circle leftCircle;
+    private Stage stage;
 
-    @FXML
-    protected Circle rightCircle;
-
-    protected boolean leftPosition;
-
-    public void initialize() {
-        leftCircle.setFill(Color.RED);
-        rightCircle.setFill(Color.BLUE);
-        leftPosition = true;
+    public void nextScreen(ActionEvent actionEvent) {
+        try {
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("sample2.fxml")), 900.0, 700.0));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void changeColor(ActionEvent actionEvent) {
-        Paint leftFill = leftCircle.getFill();
-        if (leftPosition) {
-            leftCircle.setFill(Color.BLUE);
-            rightCircle.setFill(Color.RED);
-            leftPosition = false;
-        } else {
-            leftCircle.setFill(Color.RED);
-            rightCircle.setFill(Color.BLUE);
-            leftPosition = true;
-        }
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
+    public Stage getStage() {
+        return stage;
     }
 }
