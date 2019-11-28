@@ -8,7 +8,7 @@ public class Car {
     protected String make;
     protected String model;
     protected Integer yearOfProduction;
-    protected Double engineCapacity; // ccm
+    protected boolean diesel;
     protected Double enginePower; // KM
     protected String color; // rgb
 
@@ -44,12 +44,12 @@ public class Car {
         this.yearOfProduction = yearOfProduction;
     }
 
-    public Double getEngineCapacity() {
-        return engineCapacity;
+    public boolean isDiesel() {
+        return diesel;
     }
 
-    public void setEngineCapacity(Double engineCapacity) {
-        this.engineCapacity = engineCapacity;
+    public void setDiesel(boolean diesel) {
+        this.diesel = diesel;
     }
 
     public Double getEnginePower() {
@@ -60,12 +60,12 @@ public class Car {
         this.enginePower = enginePower;
     }
 
-    public static Car create(String make, String model, Integer yearOfProduction, Double engineCapacity, Double enginePower, String color) {
+    public static Car create(String make, String model, Integer yearOfProduction, boolean isDiesel, Double enginePower, String color) {
         Car car = new Car();
         car.setMake(make);
         car.setModel(model);
         car.setYearOfProduction(yearOfProduction);
-        car.setEngineCapacity(engineCapacity);
+        car.setDiesel(isDiesel);
         car.setEnginePower(enginePower);
         car.setColor(color);
         return car;
