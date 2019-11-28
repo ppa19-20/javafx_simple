@@ -50,9 +50,9 @@ public class CarTableController {
             editedCar.setDiesel(edit.getNewValue());
         });
 
-        Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "FFCC33");
-        Car car2 = Car.create("Porsche", "Carrera", 1976, false, 233.0, "000000");
-        Car car3 = Car.create("Honda", "Civic", 2010, false, 112.0, "D2A088");
+        Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "#FFCC33");
+        Car car2 = Car.create("Porsche", "Carrera", 1976, false, 233.0, "#000000");
+        Car car3 = Car.create("Honda", "Civic", 2010, false, 112.0, "#D2A088");
         carTableView.getItems().addAll(car1, car2, car3);
         carTableView.setEditable(true);
         carTableView.setOnMouseClicked(click -> {
@@ -60,6 +60,8 @@ public class CarTableController {
                 carTableView.edit(carTableView.getSelectionModel().getSelectedIndex(), makeColumn);
             }
         });
+
+        // Color.web() do stworzenia koloru
     }
 
 }
