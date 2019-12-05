@@ -8,7 +8,7 @@ public class Car {
     protected String make;
     protected String model;
     protected Integer yearOfProduction;
-    protected boolean diesel;
+    protected Boolean diesel;
     protected Double enginePower; // KM
     protected String color; // rgb
 
@@ -44,11 +44,11 @@ public class Car {
         this.yearOfProduction = yearOfProduction;
     }
 
-    public boolean isDiesel() {
+    public Boolean isDiesel() {
         return diesel;
     }
 
-    public void setDiesel(boolean diesel) {
+    public void setDiesel(Boolean diesel) {
         this.diesel = diesel;
     }
 

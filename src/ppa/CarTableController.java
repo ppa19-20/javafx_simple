@@ -1,11 +1,14 @@
 package ppa;
 
+import javafx.beans.value.ObservableValueBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.util.converter.IntegerStringConverter;
 import ppa.model.Car;
 
@@ -50,9 +53,29 @@ public class CarTableController {
             editedCar.setDiesel(edit.getNewValue());
         });
 
+        TableColumn<Car, Circle> colorColumn = (TableColumn<Car, Circle>) carTableView.getColumns().get(4);
+        colorColumn.setCellValueFactory(carCircleCellDataFeatures -> {
+            Car car = carCircleCellDataFeatures.getValue();
+            String colorString = car.getColor();
+            Circle colorCircle = new Circle(10.0);
+            colorCircle.setFill(Color.web(colorString));
+            return new ObservableValueBase<Circle>() {
+                @Override
+                public Circle getValue() {
+                    return colorCircle;
+                }
+            };
+        });
+        /*dieselColumn.setCellFactory(CheckBoxTableCell.forTableColumn(dieselColumn));
+        dieselColumn.setOnEditCommit(edit -> {
+            Car editedCar = carTableView.getEditingCell().getTableView().getItems().get(carTableView.getEditingCell().getRow());
+            editedCar.setDiesel(edit.getNewValue());
+        });*/
+
+
         Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "#FFCC33");
-        Car car2 = Car.create("Porsche", "Carrera", 1976, false, 233.0, "#000000");
-        Car car3 = Car.create("Honda", "Civic", 2010, false, 112.0, "#D2A088");
+        Car car2 = Car.create("Porsche", "Carrera", 1976, true, 233.0, "#000000");
+        Car car3 = Car.create("Honda", "Civic", 2010, true, 112.0, "#D2A088");
         carTableView.getItems().addAll(car1, car2, car3);
         carTableView.setEditable(true);
         carTableView.setOnMouseClicked(click -> {
