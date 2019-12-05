@@ -1,5 +1,6 @@
 package ppa;
 
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValueBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -47,7 +48,7 @@ public class CarTableController {
 
         TableColumn<Car, Boolean> dieselColumn = (TableColumn<Car, Boolean>) carTableView.getColumns().get(3);
         dieselColumn.setCellValueFactory(new PropertyValueFactory<>("diesel"));
-        dieselColumn.setCellFactory(CheckBoxTableCell.forTableColumn(dieselColumn));
+        dieselColumn.setCellFactory(CheckBoxTableCell.forTableColumn(idx -> new SimpleBooleanProperty(carTableView.getItems().get(idx).isDiesel())));
         dieselColumn.setOnEditCommit(edit -> {
             Car editedCar = carTableView.getEditingCell().getTableView().getItems().get(carTableView.getEditingCell().getRow());
             editedCar.setDiesel(edit.getNewValue());
