@@ -1,16 +1,16 @@
 package ppa;
 
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValueBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TablePosition;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.converter.IntegerStringConverter;
+import ppa.component.CheckBoxEditableTableCell;
 import ppa.model.Car;
 
 /**
@@ -48,7 +48,7 @@ public class CarTableController {
 
         TableColumn<Car, Boolean> dieselColumn = (TableColumn<Car, Boolean>) carTableView.getColumns().get(3);
         dieselColumn.setCellValueFactory(new PropertyValueFactory<>("diesel"));
-        dieselColumn.setCellFactory(CheckBoxTableCell.forTableColumn(idx -> new SimpleBooleanProperty(carTableView.getItems().get(idx).isDiesel())));
+        dieselColumn.setCellFactory(list -> new CheckBoxEditableTableCell<>());
         dieselColumn.setOnEditCommit(edit -> {
             Car editedCar = carTableView.getEditingCell().getTableView().getItems().get(carTableView.getEditingCell().getRow());
             editedCar.setDiesel(edit.getNewValue());
@@ -79,13 +79,18 @@ public class CarTableController {
         Car car3 = Car.create("Honda", "Civic", 2010, true, 112.0, "#D2A088");
         carTableView.getItems().addAll(car1, car2, car3);
         carTableView.setEditable(true);
+        carTableView.getSelectionModel().cellSelectionEnabledProperty().setValue(true);
         carTableView.setOnMouseClicked(click -> {
             if (click.getClickCount() > 1) {
-                carTableView.edit(carTableView.getSelectionModel().getSelectedIndex(), makeColumn);
+                editFocusedCell();
             }
         });
-
-        // Color.web() do stworzenia koloru
     }
+
+    private void editFocusedCell() {
+        TablePosition<Car, ?> focusedCell = carTableView.focusModelProperty().get().focusedCellProperty().get();
+        carTableView.edit(focusedCell.getRow(), focusedCell.getTableColumn());
+    }
+
 
 }
