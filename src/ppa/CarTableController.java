@@ -1,5 +1,14 @@
 package ppa;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.thoughtworks.xstream.XStream;
+
 import javafx.beans.value.ObservableValueBase;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -72,12 +81,17 @@ public class CarTableController {
             Car editedCar = carTableView.getEditingCell().getTableView().getItems().get(carTableView.getEditingCell().getRow());
             editedCar.setDiesel(edit.getNewValue());
         });*/
-
-
-        Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "#FFCC33");
-        Car car2 = Car.create("Porsche", "Carrera", 1976, true, 233.0, "#000000");
-        Car car3 = Car.create("Honda", "Civic", 2010, true, 112.0, "#D2A088");
-        carTableView.getItems().addAll(car1, car2, car3);
+        XStream serializer = new XStream();
+        try (FileInputStream fis = new FileInputStream("cars.xml")) {
+            List<Car> deserializedCars = (List<Car>) serializer.fromXML(new InputStreamReader(fis));
+            carTableView.getItems().addAll(deserializedCars);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "#FFCC33");
+            Car car2 = Car.create("Porsche", "Carrera", 1976, true, 233.0, "#000000");
+            Car car3 = Car.create("Honda", "Civic", 2010, true, 112.0, "#D2A088");
+            carTableView.getItems().addAll(car1, car2, car3);
+        }
         carTableView.setEditable(true);
         carTableView.getSelectionModel().cellSelectionEnabledProperty().setValue(true);
         carTableView.setOnMouseClicked(click -> {
@@ -85,6 +99,16 @@ public class CarTableController {
                 editFocusedCell();
             }
         });
+        // chcemy zapis przenieść do jakiegoś przycisku
+        String xmlVersion = serializer.toXML(new ArrayList<>(carTableView.getItems()));
+        try (FileOutputStream fos = new FileOutputStream("cars.xml")) { // try-with-resources
+            try (PrintWriter pw = new PrintWriter(fos)) {
+                pw.print(xmlVersion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 
     private void editFocusedCell() {
