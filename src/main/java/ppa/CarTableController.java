@@ -7,6 +7,10 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Table;
 import com.thoughtworks.xstream.XStream;
 
 import javafx.beans.value.ObservableValueBase;
@@ -105,6 +109,22 @@ public class CarTableController {
             try (PrintWriter pw = new PrintWriter(fos)) {
                 pw.print(xmlVersion);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        try (PdfWriter writer = new PdfWriter("cars.pdf")) {
+            PdfDocument pdf = new PdfDocument(writer);
+            Document document = new Document(pdf);
+            Table table = new Table(4).useAllAvailableWidth();
+            table.addHeaderCell("Make").addHeaderCell("Model").addHeaderCell("Year").addHeaderCell("Diesel");
+            for (Car item : carTableView.getItems()) {
+                table.startNewRow();
+                table.addCell(item.getMake()).addCell(item.getModel()).addCell(item.getYearOfProduction().toString()).
+                    addCell(item.isDiesel().toString());
+            }
+            document.add(table);
+            document.close();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(e);
