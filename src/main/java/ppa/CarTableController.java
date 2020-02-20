@@ -1,9 +1,6 @@
 package ppa;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.util.converter.IntegerStringConverter;
 import ppa.component.CheckBoxEditableTableCell;
+import ppa.dao.XlsxImportExportInterface;
 import ppa.model.Car;
 
 /**
@@ -85,8 +83,35 @@ public class CarTableController {
             Car editedCar = carTableView.getEditingCell().getTableView().getItems().get(carTableView.getEditingCell().getRow());
             editedCar.setDiesel(edit.getNewValue());
         });*/
-        XStream serializer = new XStream();
-        try (FileInputStream fis = new FileInputStream("cars.xml")) {
+        File file = new File("cars.xlsx");
+        XlsxImportExportInterface importInterface = new XlsxImportExportInterface(file);
+        try {
+            List<Car> deserializedCars = importInterface.readCars();
+            carTableView.getItems().addAll(deserializedCars);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Car car1 = Car.create("Ford", "Focus", 2006, true, 82.0, "#FFCC33");
+            Car car2 = Car.create("Porsche", "Carrera", 1976, true, 233.0, "#000000");
+            Car car3 = Car.create("Honda", "Civic", 2010, true, 112.0, "#D2A088");
+            carTableView.getItems().addAll(car1, car2, car3);
+        }
+        importInterface.writeCars(carTableView.getItems());
+        carTableView.setEditable(true);
+        carTableView.getSelectionModel().cellSelectionEnabledProperty().setValue(true);
+        carTableView.setOnMouseClicked(click -> {
+            if (click.getClickCount() > 1) {
+                editFocusedCell();
+            }
+        });
+    }
+
+    private void editFocusedCell() {
+        TablePosition<Car, ?> focusedCell = carTableView.focusModelProperty().get().focusedCellProperty().get();
+        carTableView.edit(focusedCell.getRow(), focusedCell.getTableColumn());
+    }
+
+    /*
+    try (FileInputStream fis = new FileInputStream("cars.xml")) {
             List<Car> deserializedCars = (List<Car>) serializer.fromXML(new InputStreamReader(fis));
             carTableView.getItems().addAll(deserializedCars);
         } catch (Exception e) {
@@ -129,12 +154,8 @@ public class CarTableController {
             e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
+     */
 
-    private void editFocusedCell() {
-        TablePosition<Car, ?> focusedCell = carTableView.focusModelProperty().get().focusedCellProperty().get();
-        carTableView.edit(focusedCell.getRow(), focusedCell.getTableColumn());
-    }
 
 
 }
